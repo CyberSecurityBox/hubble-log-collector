@@ -1,0 +1,40 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: hubble-log-collector
+  namespace: hubble-dev
+spec:
+  backoffLimit: 3
+  activeDeadlineSeconds: 21600 # 6hours
+  ttlSecondsAfterFinished: 21660 # 6hours + 1second 
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: collector
+          image: cybersecuritybox/hubble-log-collector:latest
+          command: ["hubble", "observe", "-o", "json", "-f"]
+#          command: ["hubble", "observe", "-o", "json", "--from-namespace", "kafka", "-f"]
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "1"
+          securityContext:
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            privileged: false
+            capabilities:
+              drop:
+                - all
+          env:
+            - name: HUBBLE_SERVER
+              value: "hubble-relay.kube-system:80"
+            - name: K8S_CLUSTER_NAME
+              value: ""
+          envFrom:
+            - secretRef:
+                name: hubble-log-collector
