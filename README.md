@@ -5,6 +5,7 @@ for cloud native workloads. It is built on top of [Cilium] and [eBPF] to enable
 deep visibility into the communication and behavior of services as well as the
 networking infrastructure in a completely transparent manner.
 
+`Hubble-Log-Collector` and [Hubble-Storage](https://github.com/CyberSecurityBox/hubble-storage) are used together.
 
 # What is Hubble-Log-Collector for?
 
