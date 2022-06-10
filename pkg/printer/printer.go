@@ -352,23 +352,21 @@ func (p *Printer) WriteProtoFlow(res *observerpb.GetFlowsResponse) error {
 		}
 	case JSONOutput:
 		// Producer
-		go func() {
-			key := env.ClusterName
-			marshal, _ := res.GetFlow().MarshalJSON()
-			value := string(marshal)
+		key := env.ClusterName
+		marshal, _ := res.GetFlow().MarshalJSON()
+		value := string(marshal)
 
-			prod, err := kafka.ProducerInit(env.Log)
-			if err != nil {
-				env.Log.WithError(err).Error("Can't create producer")
-			}
-			_, _, err = prod.SendMessage(key, &value)
-			if err != nil {
-				env.Log.WithError(err).Error("Can't send message")
-			}
-			prod.ClearProducer()
+		prod, err := kafka.ProducerInit(env.Log)
+		if err != nil {
+			env.Log.WithError(err).Error("Can't create producer")
+		}
+		_, _, err = prod.SendMessage(key, &value)
+		if err != nil {
+			env.Log.WithError(err).Error("Can't send message")
+		}
+		prod.ClearProducer()
 
-			fmt.Println(value)
-		}()
+		fmt.Println(value)
 		return p.jsonEncoder.Encode(f)
 	case JSONPBOutput:
 		return p.jsonEncoder.Encode(res)

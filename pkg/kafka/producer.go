@@ -41,9 +41,9 @@ func NewProducer(log logrus.FieldLogger, producerInfor *ProducerInfor) (Producer
 	configProducer := sarama.NewConfig()
 
 	configProducer.Version = version
-	configProducer.Producer.Partitioner = sarama.NewRoundRobinPartitioner
+	configProducer.Producer.Partitioner = sarama.NewRandomPartitioner
 	configProducer.Producer.Return.Successes = true
-	configProducer.Producer.RequiredAcks = sarama.WaitForAll //default
+	configProducer.Producer.RequiredAcks = sarama.WaitForLocal //default
 	configProducer.Producer.MaxMessageBytes = 10000000         // default * 10
 
 	configProducer.Net.SASL.Enable = true
